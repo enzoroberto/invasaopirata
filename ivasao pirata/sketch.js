@@ -16,9 +16,22 @@ function preload() {
   towerImg = loadImage("./assets/tower.png");
 }
 
+function colisao (S) {
+  for( var i = 0; i < boats.length; i++ ) {
+    if(balls[S] !== undefined && boats[i] !== undefined) {
+      var col = Matter.SAT.collides(balls[S].body, boats[i].body)
+      if(col.collided) {
+        boats[i].remove(i);
+        World.remove(world, balls[S].body)
+        delete balls[S]
+      }
+    }
+  }
+}
+
 function showboats () {
   if(boats.length > 0) {
-    if(boats[boats.lenght-1] === undefined || boats[boats.lenght-1].body.position.x < width-300) {
+    if(boats[boats.length-1] === undefined || boats[boats.length-1].body.position.x < width-300) {
       var posicoes = [-40, -60, -70, -20];
       var posicao = random(posicoes);
       var boat = new Boat(width, height-100, 170,170,posicao);
@@ -41,6 +54,9 @@ function showboats () {
 function showcannonball (ball, i) {
   if(ball) {
     ball.display();
+    if(ball.body.position.x >= width || ball.body.position.y >= height - 50){
+      ball.remove(i);
+    }
   }
 }
 
@@ -70,7 +86,6 @@ function setup() {
     isStatic: true
   }
   cannon = new Cannon(180, 140, 130, 100, 20);
-  boat = new Boat(width - 150, height - 45, 170, 170, 200);
   ground = Bodies.rectangle(0,height-1, width*2,1,options);
   World.add(world,ground);
 
@@ -84,6 +99,7 @@ function draw() {
   Engine.update(engine);
   for(var i = 0; i < balls.length; i = i + 1 ){
     showcannonball (balls[i], i);
+    colisao(i);
   }
   cannon.display ();
   push();

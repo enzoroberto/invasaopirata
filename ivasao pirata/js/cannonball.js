@@ -25,4 +25,12 @@ class Cannonball {
         Matter.Body.setStatic(this.body, false);
         Matter.Body.setVelocity(this.body, { x: velocity.x *(180/3.14), y: velocity.y * (180/3.14)});
     }
-}
+    remove (S) {
+        setTimeout (() => {
+             World.remove(world,this.body);
+             delete balls[S];
+        },2000 );
+        
+     }
+ }
+ 
